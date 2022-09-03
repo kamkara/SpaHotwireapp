@@ -10,15 +10,17 @@
 
   <div class="flex items-center justify-center">
     <div id="posts" class="min-w-md mx-auto">
-      <div class="">
+      <div class="" data-controller="navigation"
+    data-action="turbo:before-fetch-response@document->navigation#displayContent">
         <!-- Cible: post card-->
         <%= turbo_frame_tag :index, class:"post-card" do %>
           <% @posts.each do |post| %>
             <div class="border p-2 mb-2">
               <div class="font-semibold ">
                 <h1 class="">
-                  <%= link_to post_path(post), data: { turbo_frame: "details", action: "",
-          navigation_target: "" } do %>
+                  <%= link_to post_path(post), data: { turbo_frame: "details", 
+                  action: "turbo:click->navigation#displayLoading",
+                  navigation_target: "link" } do %>
                     <%= post.title %>
                   <% end %>
                   
@@ -27,8 +29,9 @@
 
               <div class="">
                 <p class="my-2">
-                  <%= link_to post_path(post), data: { turbo_frame: "details", action: "",
-          navigation_target: "" } do %>
+                  <%= link_to post_path(post), data: { turbo_frame: "details", 
+                  action: "turbo:click->navigation#displayLoading",
+                  navigation_target: "link" } do %>
                     <%= truncate(strip_tags(post.content.to_s.html_safe), length: 200) %>
                   <% end %>
                 </p>
@@ -38,10 +41,17 @@
         <% end %>
 
         <!-- Cible: post details-->
-        <%= turbo_frame_tag :details, class:"post-details" do %>
+        <%= turbo_frame_tag :details, class:"post-details",
+         "data-navigation-target": "content"  do %>
            Select a movie for more details...
         <% end %>
         
+
+        <!-- loading-->
+        <div class="loading-indicator hidden"
+          data-navigation-target="loading">
+        <%= image_tag("loading.gif") %>
+        </div>
       </div>
     </div>
   </div>
